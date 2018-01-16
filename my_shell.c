@@ -15,28 +15,47 @@
 extern char **getln();
 
 int searchArgs(char** args, const char* stringToBeSearched, int arraySize){
-	int foundString = -1;
+	//program search through the args
+	int foundString = 0;
+	int foundAtIndex = -1;
 	for(int x=0; x<arraySize; x++){
 		if(strcmp(args[x], stringToBeSearched) == 0){
+			foundAtIndex = x;
 			foundString++;
+			if(foundString >= 2){
+				return -2;
+			}//end if
 		}//end if
 	}//end for
-	return foundString;
+	return foundAtIndex;
 }//end if
 
-void fileOpen(char** string, int argNum){
-	int foundOutput = 0;
-	int foundInput = 0;
-
-	if(string[2] == '>'){
-		
-	}else if(string[2] == '<'){
-
+void fileCommand(char** args, int argNum){
+	//dec vars
+	FILE* filePointer;
+	int outputIndex = searchArgs(args, ">", argNum+1);
+	int inputIndex = searchArgs(args, "<", argNum+1);
+	//debug
+	if(DEBUG)printf("outputIndex: %d", outputIndex);
+	if(DEBUG)printf("inputIndex: %d", inputIndex);
+	//check if there us input or output
+	if(outputIndex >= 0 && inputIndex >= 0){
+		printf("Invalid argument, cannot take '>' and '<' at the same time\n");
+	}else if(outputIndex >= 0){
+		filePointer = freopen(args[outputIndex+1], "w+", stdout);
+		fclose(filePointer);
+	}else if(inputIndex >= 0){
+		filePointer = freopen(args[inputIndex+1], "r", stdout);
+		fclose(filePointer);
+	}else if(outputIndex == -2){
+		printf("Invalid argument, found multiple '>' command");
+	}else if(inputIndex == -2){
+		printf("Invalid argument, found multiple '<' command");
 	}//end if
 }//end func
 
-void exitCommand(char* string, int argNum){
-	if(strcmp(string, "exit") == 0 && argNum == 0){
+void exitCommand(char* arg, int argNum){
+	if(strcmp(arg, "exit") == 0 && argNum == 0){
 		exit(0);
 	}//end if
 }//end func
