@@ -22,9 +22,9 @@ int searchArgs(char** args, const char* stringToBeSearched, int arraySize){
 		if(strcmp(args[x], stringToBeSearched) == 0){
 			foundAtIndex = x;
 			foundString++;
-			if(DEBUG)printf("Found arg\n");
+			if(DEBUG)printf("Found %d match arg\n", foundString);
 			if(foundString >= 2){
-				return -2;
+				return -2;//when multiple match
 			}//end if
 		}//end if
 	}//end for
@@ -62,11 +62,13 @@ void exitCommand(char* arg, int numOfArg){
 }//end func
 
 void myCode(char** args, int numOfArg){
+	//commands
 	exitCommand(args[0], numOfArg);
 	fileCommand(args, numOfArg);
+
+	//forking
 	pid_t child_pid;
 	int statLock;
-
 	child_pid = fork();
 	if(child_pid == 0){
 		//child
