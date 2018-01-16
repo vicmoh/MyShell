@@ -22,6 +22,7 @@ int searchArgs(char** args, const char* stringToBeSearched, int arraySize){
 		if(strcmp(args[x], stringToBeSearched) == 0){
 			foundAtIndex = x;
 			foundString++;
+			if(DEBUG)printf("Found arg\n");
 			if(foundString >= 2){
 				return -2;
 			}//end if
@@ -30,14 +31,14 @@ int searchArgs(char** args, const char* stringToBeSearched, int arraySize){
 	return foundAtIndex;
 }//end if
 
-void fileCommand(char** args, int argNum){
+void fileCommand(char** args, int numOfArg){
 	//dec vars
 	FILE* filePointer;
-	int outputIndex = searchArgs(args, ">", argNum+1);
-	int inputIndex = searchArgs(args, "<", argNum+1);
+	int outputIndex = searchArgs(args, ">", numOfArg);
+	int inputIndex = searchArgs(args, "<", numOfArg);
 	//debug
-	if(DEBUG)printf("outputIndex: %d", outputIndex);
-	if(DEBUG)printf("inputIndex: %d", inputIndex);
+	if(DEBUG)printf("outputIndex: %d\n", outputIndex);
+	if(DEBUG)printf("inputIndex: %d\n", inputIndex);
 	//check if there us input or output
 	if(outputIndex >= 0 && inputIndex >= 0){
 		printf("Invalid argument, cannot take '>' and '<' at the same time\n");
@@ -48,20 +49,21 @@ void fileCommand(char** args, int argNum){
 		filePointer = freopen(args[inputIndex+1], "r", stdout);
 		fclose(filePointer);
 	}else if(outputIndex == -2){
-		printf("Invalid argument, found multiple '>' command");
+		printf("Invalid argument, found multiple '>' command\n");
 	}else if(inputIndex == -2){
-		printf("Invalid argument, found multiple '<' command");
+		printf("Invalid argument, found multiple '<' command\n");
 	}//end if
 }//end func
 
-void exitCommand(char* arg, int argNum){
-	if(strcmp(arg, "exit") == 0 && argNum == 0){
+void exitCommand(char* arg, int numOfArg){
+	if(strcmp(arg, "exit") == 0 && numOfArg == 1){
 		exit(0);
 	}//end if
 }//end func
 
-void myCode(char** args, int argNum){
-	exitCommand(args[0], argNum);
+void myCode(char** args, int numOfArg){
+	exitCommand(args[0], numOfArg);
+	fileCommand(args, numOfArg);
 	pid_t child_pid;
 	int statLock;
 
@@ -81,19 +83,19 @@ int main() {
 	int i;
 	char **args; 
 	//my var
-	int argNum = -1;
+	int numOfArg = 0;
 	
 	//infinite program
 	while(1) {
-		argNum = 0;
+		numOfArg = 0;
 		args = getln();
 		for(i = 0; args[i] != NULL; i++) {
 			printf("Argument %d: %s\n", i, args[i]);
-			argNum++;
+			numOfArg++;
 		}//end for
 
 		//my code
-		myCode(args, argNum);
+		myCode(args, numOfArg);
 	}//end while
 
 	//exit
