@@ -31,7 +31,7 @@ int searchArgs(char** args, const char* stringToBeSearched, int arraySize);
 void executeArgs(char** args);
 bool exitCommand(char* arg, int numOfArg);
 bool fileCommand(char** args, int numOfArg);
-bool addCommand(char** args, int numOfArg);
+bool newCommands(char** args, int numOfArg);
 
 /**********************************************
  * CODES
@@ -72,11 +72,11 @@ void myCode(char** args, int numOfArg){
 	//which goes through the program and check the command
 	//on the if statement
 	if(exitCommand(args[0], numOfArg)){
-
+		if(DEBUG)printf("Error: Exit program failed\n");
 	}else if(fileCommand(args, numOfArg)){
-	
-	}else if(addCommand(args, numOfArg)){
-	
+		if(DEBUG)printf("File command success\n");
+	}else if(newCommands(args, numOfArg)){
+		if(DEBUG)printf("Other command sucess\n");
 	}else if(args[x+1] == NULL){
 		//if there is noa argmuent
 		executeArgs(args);
@@ -124,7 +124,7 @@ void executeArgs(char** args){
 		//child process works 
 		int execResult = execvp(argv[x], argv);
 		if(execResult < 0){
-			printf("Error: execvp failed\n");
+			printf("Invalid argument, please re-enter\n");
 			exit(1);
 		}else{
 			execvp(argv[x], argv);
@@ -166,13 +166,15 @@ bool fileCommand(char** args, int numOfArg){
 	return false;
 }//end func
 
-bool addCommand(char** args, int numOfArg){
+bool newCommands(char** args, int numOfArg){
+	//other commnads for question number 2
 	if(strcmp("add", args[0]) == 0){
-		//loop and add the number
+		//dec nedded vars
 		char* stringNum = malloc(sizeof(char*)*256);
 		char* printString = malloc(sizeof(char*)*256);
 		int total = 0;
 		int num = 0;
+		//loop and add the number
 		for(int x = 1; x < numOfArg; x++){
 			//conver the number and save it to the stringNum
 			stringNum = args[x];
@@ -188,6 +190,40 @@ bool addCommand(char** args, int numOfArg){
 		free(stringNum);
 		free(printString);
 		return true;
-	}//end
+	}else if(strcmp("arg", args[0]) == 0){
+		//dec for needed variables
+		int argc = numOfArg -1;
+		char* argString = malloc(sizeof(char*)*256);
+		//loop and add the string for the argument
+		for(int x = 1; x <= argc; x++){
+			strcat(argString, args[x]);
+			strcat(argString, " ");
+		}//end for
+		printf("argc = %d, args = %s\n", argc, argString);
+		free(argString);
+		return true;
+	}else if(strcmp("subtract", args[0]) == 0){
+		//dec nedded vars
+		char* stringNum = malloc(sizeof(char*)*256);
+		char* printString = malloc(sizeof(char*)*256);
+		int total = 0;
+		int num = 0;
+		//loop and add the number
+		for(int x = 1; x < numOfArg; x++){
+			//conver the number and save it to the stringNum
+			stringNum = args[x];
+			if(DEBUG)printf("adding number: %s\n", stringNum);
+			strcat(printString, args[x]);
+			if(x != numOfArg-1){
+				strcat(printString, " - ");
+			}//end if
+			num = strtol(stringNum, NULL, 0);
+			total-= num;
+		}//end if
+		printf("%s = %d\n", printString, total);
+		free(stringNum);
+		free(printString);
+		return true;
+	}//end if
 	return false;
 }//end func
