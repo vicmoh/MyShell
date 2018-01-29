@@ -690,12 +690,11 @@ YY_DECL
 		}
 
 	{
-#line 11 "lex.c"
+#line 10 "lex.c"
 
 	_argcount = 0; 
 	_args[0] = NULL; 
-
-#line 699 "lex.yy.c"
+#line 698 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -755,7 +754,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 15 "lex.c"
+#line 13 "lex.c"
 {  
 	  if(_argcount < _numargs-1) {
 	    _args[_argcount++] = (char *)strdup(yytext);
@@ -766,25 +765,25 @@ YY_RULE_SETUP
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 22 "lex.c"
+#line 19 "lex.c"
 return (int)_args;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 24 "lex.c"
+#line 20 "lex.c"
 
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 26 "lex.c"
+#line 21 "lex.c"
 
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 28 "lex.c"
+#line 22 "lex.c"
 ECHO;
 	YY_BREAK
-#line 788 "lex.yy.c"
+#line 787 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1785,8 +1784,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 28 "lex.c"
-
+#line 22 "lex.c"
 
 
 char **getln() {
@@ -1794,4 +1792,3 @@ char **getln() {
 	yylex();
   return _args;
 }
-
