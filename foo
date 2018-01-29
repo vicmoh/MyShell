@@ -1,9 +1,0 @@
-total 156
--rwxrwxrwx 1 root root     0 Jan 28 18:57 foo
--rwxrwxrwx 1 root root   426 Jan 27 22:14 lex.c
--rwxrwxrwx 1 root root 45069 Jan 28 18:01 lex.yy.c
--rwxrwxrwx 1 root root 40984 Jan 28 18:01 lex.yy.o
--rwxrwxrwx 1 root root   256 Jan 15 21:32 Makefile
--rwxrwxrwx 1 root root 40912 Jan 28 18:57 msh
--rwxrwxrwx 1 root root  6805 Jan 28 18:53 my_shell.c
--rwxrwxrwx 1 root root 15296 Jan 28 18:57 my_shell.o

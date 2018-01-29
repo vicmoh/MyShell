@@ -113,13 +113,13 @@ void executeArgs(char** args, int numOfArg){
 	int x = 0, y = 0;
 	char** argv = malloc(sizeof(char*)*256);
 	//dec for the file input and ouput and background
-	int inputIndex = -1, outputIndex = -1, status = 0, sortIndex = 0;
+	int inputIndex = 0, outputIndex = 0, status = 0, sortIndex = 0;
 	char fileName[256];
 	//FILE* file = NULL;
 	//dec for the arguemnts
 	argv[x] = args[y];
 	argv[x+nextArg] = args[y+nextArg];
-	argv[x+2] = NULL;
+	//argv[x+2] = NULL;
 	//for the andpercent background process
 	int iterate = 1;
 	int sig = -1;
@@ -139,7 +139,7 @@ void executeArgs(char** args, int numOfArg){
 		sigset(SIGCHLD, stop);
 	}//end if
 	
-	int inputExist = -1;
+	/*int inputExist = -1;
 	int outputExist = -1;
 	bool foundBoth = false;
 	inputExist = searchArgs(args, "<", numOfArg);
@@ -149,46 +149,49 @@ void executeArgs(char** args, int numOfArg){
 	}else{
 		foundBoth = false;
 	}//end if
-	if(DEBUG)printf("foundBoth: %d\n", foundBoth);
+	if(DEBUG)printf("foundBoth: %d\n", foundBoth);*/
 
-	bool singleInput = false;
+	/*bool singleInput = false;
 	bool singleOutput = false;
 	char* bufferFileName;CHECK;
 	if(foundBoth == false){CHECK;
 		for(int x=0; args[x] != NULL; x++){
-			if(strcmp(args[x], ">") == 0){
+			if(!strcmp(args[x], ">")){
 				singleOutput = true;
-				bufferFileName =  args[x+1];
+				bufferFileName = args[x+1];
 				args[x+1] = NULL;
 				args[x] = NULL;
+				break;
 			}//end if
-			if(strcmp(args[x], "<") == 0){
+			if(!strcmp(args[x], "<")){
 				singleInput = true;
 				bufferFileName = args[x+1];
 				args[x+1] = NULL;
 				args[x] = NULL;
+				break;
 			}//end if
 		}//end if
 	}//end if
-	CHECK;
+	CHECK;*/
 
 	//fork a new process
 	pid_t pid = fork();
 	if(pid == 0){
 		//see if there is more than one arguments
-		if(foundBoth == true){
+		//if(foundBoth == true){
 			//search the arg and get the index
 			inputIndex = searchArgs(args, "<", numOfArg);
 			outputIndex = searchArgs(args, ">", numOfArg);
 			if(DEBUG)printf("outputIndex: %d\n", outputIndex);
 			if(DEBUG)printf("inputIndex: %d\n", inputIndex);
+			
 
 			//for the inputs 
 			if(inputIndex > 0){
 				strcpy(fileName, args[inputIndex+1]);
 				if(DEBUG)printf("fileName: %s\n", fileName);
 				freopen(fileName, "r", stdin);
-				printf("Reading...");
+				printf("Reading...\n");
 			}//end if
 			//for the output
 			if(outputIndex > 0){
@@ -197,7 +200,7 @@ void executeArgs(char** args, int numOfArg){
 				freopen(fileName, "w+" , stdout);
 				printf("Writing...\n");
 			}//end if
-		}else if(foundBoth == false){
+		/*}else if(foundBoth == false){
 			if(DEBUG)printf("Went to one arrow arg \n");
 			//when there is only single argument
 			if(singleOutput == true){
@@ -206,7 +209,7 @@ void executeArgs(char** args, int numOfArg){
 			if(singleInput == true){
 				freopen(bufferFileName, "r", stdin);
 			}//end if
-		}//end if
+		}//end if*/
 
 		//child process works 
 		int execResult = execvp(argv[x], argv);
@@ -216,17 +219,14 @@ void executeArgs(char** args, int numOfArg){
 			printf("Invalid argument, please re-enter\n");
 			exit(1);
 		}//end if
-	}else if(pid){
+	}else if(pid > 0){
 		//thee praent or the original process
 		wait(&status);
-	}else if(pid < 0){
+	}else if(pid == -1){
 		//there is an error
 		printf("Error: failed to created a new process\n");
 		exit(0);
 	}//end if
-
-	//free the memory
-	free(argv);
 }//end dif
 
 bool exitCommand(char* arg, int numOfArg){
