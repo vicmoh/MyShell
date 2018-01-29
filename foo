@@ -1,13 +1,9 @@
-dude
-foo
-food
-get
-lex.c
-lex.yy.c
-lex.yy.o
-Makefile
-msh
-my_shell.c
-my_shell.o
-you
-youtube
+total 168
+-rwxrwxrwx 1 root root     0 Jan 29 06:08 foo
+-rwxrwxrwx 1 root root   444 Jan 29 00:15 lex.c
+-rwxrwxrwx 1 root root 45082 Jan 29 05:07 lex.yy.c
+-rwxrwxrwx 1 root root 40984 Jan 29 05:07 lex.yy.o
+-rwxrwxrwx 1 root root   256 Jan 15 21:32 Makefile
+-rwxrwxrwx 1 root root 41824 Jan 29 06:07 msh
+-rwxrwxrwx 1 root root  9082 Jan 29 06:06 my_shell.c
+-rwxrwxrwx 1 root root 18384 Jan 29 06:07 my_shell.o

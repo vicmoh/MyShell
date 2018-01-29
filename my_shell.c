@@ -90,13 +90,13 @@ void myCode(char** args, int numOfArg){
 			if(DEBUG)printf("Error: Exit program failed\n");
 		}else if(newCommands(args, numOfArg)){
 			if(DEBUG)printf("Other command sucess\n");
-		}/*else if(args[x+1] == NULL){
+		}else if(args[x+1] == NULL){
 			//if there is no argmuent
 			executeArgs(args, numOfArg);
-		}else if(args[x+1] != NULL){*/
+		}else if(args[x+1] != NULL){
 			//if there is more than one argumment
-		else{executeArgs(args, numOfArg);}
-		//}//end if
+			executeArgs(args, numOfArg);
+		}//end if
 	}//end if
 }//end func
 
@@ -121,15 +121,15 @@ void executeArgs(char** args, int numOfArg){
 	//dec vars
 	const int nextArg = 1; 
 	int x = 0, y = 0;
-	//char** argv = malloc(sizeof(char*)*256);
+	char** argv = malloc(sizeof(char*)*256);
 	//dec for the file input and ouput and background
 	int inputIndex = 0, outputIndex = 0, status = 0, sortIndex = 0, ampersand = 0;
 	char* fileName;
 	//FILE* file = NULL;
 	//dec for the arguemnts
-	//argv[x] = args[y];
-	//argv[x+nextArg] = args[y+nextArg];
-	//argv[x+2] = NULL;
+	argv[x] = args[y];
+	argv[x+nextArg] = args[y+nextArg];
+	argv[x+2] = NULL;
 	//for the ampersand background process
 	
 	//to check if there is double arg
@@ -145,7 +145,7 @@ void executeArgs(char** args, int numOfArg){
 	}//end if
 	if(DEBUG)printf("foundBoth: %d\n", foundBoth);
 
-	//save the file name
+	/*//save the file name
 	inputIndex = searchArgs(args, "<", numOfArg);
 	outputIndex = searchArgs(args, ">", numOfArg);
 	if(outputIndex > 0){
@@ -158,23 +158,19 @@ void executeArgs(char** args, int numOfArg){
 
 	inputIndex = searchArgs(args, "<", numOfArg);
 	outputIndex = searchArgs(args, ">", numOfArg);
-	bool singleInput = false;
-	bool singleOutput = false;
-	//if(foundBoth == false){
+	if(foundBoth == false){
 		for(int x=0; args[x] != NULL; x++){
 			if(strcmp(args[x], ">") == 0){
-				singleOutput = true;
 				fileName = setString(args[x+1]);
-				args[x+1] = NULL;
+				//args[x+1] = NULL;
 				args[x] = NULL;
 				break;
 			}//end if
 		}//end for
 		for(int x=0; args[x] != NULL; x++){
 			if(strcmp(args[x], "<") == 0){
-				singleInput = true;
 				fileName = setString(args[x+1]);
-				args[x+1] = NULL;
+				//args[x+1] = NULL;
 				args[x] = NULL;
 				break;
 			}//end if
@@ -187,7 +183,7 @@ void executeArgs(char** args, int numOfArg){
 				break;
 			}//end if
 		}//end for
-	//}//end if
+	}//end if
 
 	//if ampersandset is 1, run the ampersandset to the background
 	if (ampersand == 1){
@@ -200,6 +196,8 @@ void executeArgs(char** args, int numOfArg){
 	if(DEBUG)printf("forked\n");
 	listOfProcess[countProcess] = pid;
 	countProcess++;
+
+	//check the process
 	if(pid == 0){
 		//see if there is more than one arguments
 		if(foundBoth == true){
@@ -218,10 +216,10 @@ void executeArgs(char** args, int numOfArg){
 			}//end if
 			//for the inputs 
 			if(inputIndex > 0){
-				//fileName = setString(args[inputIndex+1]);
+				fileName = setString(args[inputIndex+1]);
 				if(DEBUG)printf("fileName: %s\n", fileName);
 				freopen(fileName, "r", stdin);
-				//execvp(args[0], args);
+				execvp(args[0], args);
 				printf("Reading...\n");
 			}//end if
 			//for the output
@@ -229,10 +227,14 @@ void executeArgs(char** args, int numOfArg){
 			if(DEBUG)printf("Went to one arrow arg \n");
 			//when there is only single argument
 			if(outputIndex > 0){
+				if(DEBUG)printf("foundboth writting...\n");
 				freopen(fileName, "w+" , stdout);
+				//execvp(args[0], args);
 			}//end if
 			if(inputIndex > 0){
+				if(DEBUG)printf("foundboth reading...\n");
 				freopen(fileName, "r", stdin);
+				//execvp(args[0], args);
 			}//end if
 		}//end if*/
 
@@ -240,12 +242,11 @@ void executeArgs(char** args, int numOfArg){
 		if(DEBUG)printf("execvp arg value: %s\n", args[x]);
 		int execResult = execvp(args[0], args);
 		if(execResult >= 0){
-			//execvp(argv[x], argv);
+			execvp(argv[x], argv);
 		}else if(execResult < 0){
-			printf("Invalid argument, please re-enter\n");
+			printf("Error: execvp failed\n");
 			exit(1);
 		}//end if
-		exit(0);
 	}else if(pid){
 		//thee praent or the original process
 		wait(&status);
