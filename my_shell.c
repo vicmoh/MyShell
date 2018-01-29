@@ -38,7 +38,7 @@ int searchArgs(char** args, const char* stringToBeSearched, int arraySize);
 void executeArgs(char** args, int numOfArg);
 bool exitCommand(char* arg, int numOfArg);
 bool newCommands(char** args, int numOfArg);
-void stop(int sig);
+void stop(int ampersand);
 
 /**********************************************
  * CODES
@@ -123,16 +123,16 @@ void executeArgs(char** args, int numOfArg){
 	int x = 0, y = 0;
 	//char** argv = malloc(sizeof(char*)*256);
 	//dec for the file input and ouput and background
-	int inputIndex = 0, outputIndex = 0, status = 0, sortIndex = 0, sig = -0;
+	int inputIndex = 0, outputIndex = 0, status = 0, sortIndex = 0, ampersand = 0;
 	char* fileName;
 	//FILE* file = NULL;
 	//dec for the arguemnts
 	//argv[x] = args[y];
 	//argv[x+nextArg] = args[y+nextArg];
 	//argv[x+2] = NULL;
-	//for the andpercent background process
+	//for the ampersand background process
 	
-	/*//to check if there is double arg
+	//to check if there is double arg
 	int inputExist = -1;
 	int outputExist = -1;
 	bool foundBoth = false;
@@ -181,17 +181,18 @@ void executeArgs(char** args, int numOfArg){
 		}//end for
 		for(int x=0; args[x] != NULL; x++){
 			if(strcmp(args[x], "&") == 0){
-				//remove the andpercent and set the sig to 1
-				sig = 1;
+				//remove the ampersand and set the ampersand to 1
+				ampersand = 1;
 				args[x] = NULL;
 				break;
 			}//end if
 		}//end for
 	//}//end if
 
-	//if sigset is 1, run the sigset to the background
-	if (sig == 1){
-		sigset(SIGCHLD, stop);
+	//if ampersandset is 1, run the ampersandset to the background
+	if (ampersand == 1){
+		if(DEBUG)printf("sigset is called\n");
+		signal (SIGCHLD, stop);
 	}//end if*/
 
 	//fork a new process
@@ -201,18 +202,18 @@ void executeArgs(char** args, int numOfArg){
 	countProcess++;
 	if(pid == 0){
 		//see if there is more than one arguments
-		//if(foundBoth == true){
+		if(foundBoth == true){
 			//search the arg and get the index
-			/*inputIndex = searchArgs(args, "<", numOfArg);
+			inputIndex = searchArgs(args, "<", numOfArg);
 			outputIndex = searchArgs(args, ">", numOfArg);
 			if(DEBUG)printf("outputIndex: %d\n", outputIndex);
-			if(DEBUG)printf("inputIndex: %d\n", inputIndex);*/
+			if(DEBUG)printf("inputIndex: %d\n", inputIndex);
 
 			if(outputIndex > 0){
-				//fileName = setString(args[outputIndex+1]);
+				fileName = setString(args[outputIndex+1]);
 				if(DEBUG)printf("fileName: %s\n", fileName);
 				freopen(fileName, "w+" , stdout);
-				//execvp(args[0], args);
+				execvp(args[0], args);
 				printf("Writing...\n");
 			}//end if
 			//for the inputs 
@@ -224,16 +225,16 @@ void executeArgs(char** args, int numOfArg){
 				printf("Reading...\n");
 			}//end if
 			//for the output
-		/*}else if(foundBoth == false){
+		}else if(foundBoth == false){
 			if(DEBUG)printf("Went to one arrow arg \n");
 			//when there is only single argument
-			if(singleOutput == true){
-				freopen(bufferFileName, "w+" , stdout);
+			if(outputIndex > 0){
+				freopen(fileName, "w+" , stdout);
 			}//end if
-			if(singleInput == true){
-				freopen(bufferFileName, "r", stdin);
+			if(inputIndex > 0){
+				freopen(fileName, "r", stdin);
 			}//end if
-		//}//end if*/
+		}//end if*/
 
 		//child process works 
 		if(DEBUG)printf("execvp arg value: %s\n", args[x]);
@@ -330,7 +331,7 @@ bool newCommands(char** args, int numOfArg){
 	return false;
 }//end func
 
-void stop(int sig){
+void stop(int ampersand){
 	int status;
   	wait(&status);
 	printf("Process is done\n");
