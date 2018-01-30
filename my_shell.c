@@ -34,13 +34,65 @@ int countProcess = 0;
  * HEADERS
  **********************************************/
 
+/**
+ * program gets the line to the to the string array
+ * @return string array
+ */
 extern char **getln();
+
+/**
+ * a function that malloc a new memory
+ * and set the char with the new string
+ * @param string of to be set
+ * @return string array
+ */
 char* setString(char* string);
+
+/**
+ * a function for all my code to seperate it
+ * from the prof
+ * @param args for the arg array
+ * @param numOfArg
+ */
 void myCode(char** args, int numOfArg);
+
+/**
+ * a search args function that search the argument
+ * and return the index
+ * @param args
+ * @param stringToBeSearched
+ * @arraySize
+ * @return the index of the arg being searched 
+ */
 int searchArgs(char** args, const char* stringToBeSearched, int arraySize);
+
+/**
+ * a function tha forks and creates a new child process
+ * @param args
+ * @param numOfArgs
+ */
 void executeArgs(char** args, int numOfArg);
+
+/**
+ * a function that exit the commands
+ * @param arg
+ * @numOfArg
+ * @return ture when it exits, return false when it does not exit
+ */
 bool exitCommand(char* arg, int numOfArg);
+
+/**
+ * a functions for the other commands such as add and etc
+ * @param args
+ * @param nummOfArg
+ * @return true if arg works, false if it failed
+ */
 bool newCommands(char** args, int numOfArg);
+
+/**
+ * a dummy function that is used for the & ampersands
+ * @param dummy int
+ */
 void stop(int ampersand);
 
 /**********************************************
@@ -82,9 +134,6 @@ char* setString(char* string){
 }//end func
 
 void myCode(char** args, int numOfArg){
-	//dec vars
-	int x = 0;
-
 	//this code is going on a loop
 	//which goes through the program and check the command
 	//on the if statement
@@ -93,11 +142,8 @@ void myCode(char** args, int numOfArg){
 			if(DEBUG)printf("Error: Exit program failed\n");
 		}else if(newCommands(args, numOfArg)){
 			if(DEBUG)printf("Other command sucess\n");
-		}else if(args[x+1] == NULL){
+		}else{
 			//if there is no argmuent
-			executeArgs(args, numOfArg);
-		}else if(args[x+1] != NULL){
-			//if there is more than one argumment
 			executeArgs(args, numOfArg);
 		}//end if
 	}//end if
@@ -122,18 +168,10 @@ int searchArgs(char** args, const char* stringToBeSearched, int arraySize){
 
 void executeArgs(char** args, int numOfArg){
 	//dec vars
-	const int nextArg = 1; 
-	int x = 0, y = 0;
-	char** argv = malloc(sizeof(char*)*256);
+	int x = 0;
 	//dec for the file input and ouput and background
-	int inputIndex = 0, outputIndex = 0, status = 0, sortIndex = 0, ampersand = 0, waitTime = 0;
+	int inputIndex = 0, outputIndex = 0, ampersand = 0, waitTime = 0;
 	char* fileName;
-	//FILE* file = NULL;
-	//dec for the arguemnts
-	argv[x] = args[y];
-	argv[x+nextArg] = args[y+nextArg];
-	//argv[x+2] = NULL;
-	//for the ampersand background process
 	
 	//to check if there is double arg
 	int inputExist = -1;
@@ -148,17 +186,7 @@ void executeArgs(char** args, int numOfArg){
 	}//end if
 	if(DEBUG)printf("foundBoth: %d\n", foundBoth);
 
-	/*//save the file name
-	inputIndex = searchArgs(args, "<", numOfArg);
-	outputIndex = searchArgs(args, ">", numOfArg);
-	if(outputIndex > 0){
-		fileName = setString(args[outputIndex+1]);
-	}//end if
-	//for the inputs 
-	if(inputIndex > 0){
-		fileName = setString(args[inputIndex+1]);
-	}//end if*/
-
+	//check the < > &
 	inputIndex = searchArgs(args, "<", numOfArg);
 	outputIndex = searchArgs(args, ">", numOfArg);
 	if(foundBoth == false){
@@ -233,12 +261,10 @@ void executeArgs(char** args, int numOfArg){
 			if(outputExist > 0){
 				if(DEBUG)printf("foundboth writting...\n");
 				freopen(fileName, "w+" , stdout);
-				//execvp(args[0], args);
 			}//end if
 			if(inputExist > 0){
 				if(DEBUG)printf("foundboth reading...\n");
 				freopen(fileName, "r", stdin);
-				//execvp(args[0], args);
 			}//end if
 		}//end if*/
 
@@ -246,7 +272,7 @@ void executeArgs(char** args, int numOfArg){
 		if(DEBUG)printf("execvp arg value: %s\n", args[x]);
 		int execResult = execvp(args[0], args);
 		if(execResult >= 0){
-			execvp(argv[x], argv);
+			execvp(args[x], args);
 		}else if(execResult < 0){
 			printf("Error: Execvp failed, Invalid Argument\n");
 			exit(1);
@@ -311,23 +337,23 @@ bool newCommands(char** args, int numOfArg){
 		printf("argc = %d, args = %s\n", argc, argString);
 		free(argString);
 		return true;
-	}else if(strcmp("subtract", args[0]) == 0){
+	}else if(strcmp("multiply", args[0]) == 0){
 		//dec nedded vars
 		char* stringNum = malloc(sizeof(char*)*256);
 		char* printString = malloc(sizeof(char*)*256);
-		int total = 0;
-		int num = 0;
+		int total = 1;
+		int num = 1;
 		//loop and add the number
 		for(int x = 1; x < numOfArg; x++){
 			//conver the number and save it to the stringNum
 			stringNum = args[x];
-			if(DEBUG)printf("adding number: %s\n", stringNum);
+			if(DEBUG)printf("multiply number: %s\n", stringNum);
 			strcat(printString, args[x]);
 			if(x != numOfArg-1){
-				strcat(printString, " - ");
+				strcat(printString, " x ");
 			}//end if
 			num = strtol(stringNum, NULL, 0);
-			total-= num;
+			total = total * num;
 		}//end if
 		printf("%s = %d\n", printString, total);
 		free(stringNum);

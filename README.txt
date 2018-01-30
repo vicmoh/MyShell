@@ -22,10 +22,10 @@ and argument counter. For the process
 - The brief report has been written in the readme.txt since it does not
   say specify in the assignment.
 
-****************** Custom Command: subtract ****************** 
+****************** Custom Command: multiply ****************** 
 For my custom command, the argument is called when calling the argument
-"subtract" similarly to the "add" argument, this essentially will subtract
-the numbers such "subtract 10 5" which output 10 - 5 = 5. 
+"multiply" similarly to the "add" argument, this essentially will multiply
+the numbers such "multiply 2 2" which output 2 * 2 = 4. 
 
 ****************** Bonus command:  ******************  
 For the bonus mark, I recreated "cd" function which will act exactlly like the
