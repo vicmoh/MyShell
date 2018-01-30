@@ -1,7 +1,10 @@
 /**
- * Name: Vicky Mohammad
- * ID: 0895381
- * Email: mohammav@gmail.com
+ * @file my_shell.c
+ * @author Vicky Mohammad
+ * @id 0895381
+ * @email mohammav@uoguelph.ca
+ * @date 2018
+ * @brief a basic shell
  */
 
 /**********************************************
@@ -21,7 +24,7 @@
 #include <stdbool.h>
 #include <signal.h>
 //macro
-#define DEBUG true
+#define DEBUG false
 #define CHECK printf("CHECK\n")
 
 int listOfProcess[99];
@@ -123,13 +126,13 @@ void executeArgs(char** args, int numOfArg){
 	int x = 0, y = 0;
 	char** argv = malloc(sizeof(char*)*256);
 	//dec for the file input and ouput and background
-	int inputIndex = 0, outputIndex = 0, status = 0, sortIndex = 0, ampersand = 0;
+	int inputIndex = 0, outputIndex = 0, status = 0, sortIndex = 0, ampersand = 0, waitTime = 0;
 	char* fileName;
 	//FILE* file = NULL;
 	//dec for the arguemnts
 	argv[x] = args[y];
 	argv[x+nextArg] = args[y+nextArg];
-	argv[x+2] = NULL;
+	//argv[x+2] = NULL;
 	//for the ampersand background process
 	
 	//to check if there is double arg
@@ -162,7 +165,7 @@ void executeArgs(char** args, int numOfArg){
 		for(int x=0; args[x] != NULL; x++){
 			if(strcmp(args[x], ">") == 0){
 				fileName = setString(args[x+1]);
-				//args[x+1] = NULL;
+				args[x+1] = NULL;
 				args[x] = NULL;
 				break;
 			}//end if
@@ -170,7 +173,7 @@ void executeArgs(char** args, int numOfArg){
 		for(int x=0; args[x] != NULL; x++){
 			if(strcmp(args[x], "<") == 0){
 				fileName = setString(args[x+1]);
-				//args[x+1] = NULL;
+				args[x+1] = NULL;
 				args[x] = NULL;
 				break;
 			}//end if
@@ -180,11 +183,11 @@ void executeArgs(char** args, int numOfArg){
 				//remove the ampersand and set the ampersand to 1
 				ampersand = 1;
 				args[x] = NULL;
-				break;
+				printf("Process is done\n");
+				return;
 			}//end if
 		}//end for
 	}//end if
-
 	//if ampersandset is 1, run the ampersandset to the background
 	if (ampersand == 1){
 		if(DEBUG)printf("sigset is called\n");
@@ -207,31 +210,32 @@ void executeArgs(char** args, int numOfArg){
 			if(DEBUG)printf("outputIndex: %d\n", outputIndex);
 			if(DEBUG)printf("inputIndex: %d\n", inputIndex);
 
+			//check the input and outout filename
 			if(outputIndex > 0){
 				fileName = setString(args[outputIndex+1]);
+				args[outputIndex+1] = NULL;
 				if(DEBUG)printf("fileName: %s\n", fileName);
 				freopen(fileName, "w+" , stdout);
-				execvp(args[0], args);
 				printf("Writing...\n");
 			}//end if
 			//for the inputs 
 			if(inputIndex > 0){
 				fileName = setString(args[inputIndex+1]);
+				args[inputIndex+1] = NULL;
 				if(DEBUG)printf("fileName: %s\n", fileName);
 				freopen(fileName, "r", stdin);
-				execvp(args[0], args);
 				printf("Reading...\n");
 			}//end if
 			//for the output
 		}else if(foundBoth == false){
 			if(DEBUG)printf("Went to one arrow arg \n");
 			//when there is only single argument
-			if(outputIndex > 0){
+			if(outputExist > 0){
 				if(DEBUG)printf("foundboth writting...\n");
 				freopen(fileName, "w+" , stdout);
 				//execvp(args[0], args);
 			}//end if
-			if(inputIndex > 0){
+			if(inputExist > 0){
 				if(DEBUG)printf("foundboth reading...\n");
 				freopen(fileName, "r", stdin);
 				//execvp(args[0], args);
@@ -244,12 +248,13 @@ void executeArgs(char** args, int numOfArg){
 		if(execResult >= 0){
 			execvp(argv[x], argv);
 		}else if(execResult < 0){
-			printf("Error: execvp failed\n");
+			printf("Error: Execvp failed, Invalid Argument\n");
 			exit(1);
 		}//end if
-	}else if(pid){
-		//thee praent or the original process
-		wait(&status);
+	}else if(ampersand == 0){
+		//thee parent or the original process
+		waitpid(pid, &waitTime, WUNTRACED);
+		//wait(&status);
 	}else if(pid == -1){
 		//there is an error
 		printf("Error: failed to created a new process\n");
@@ -294,7 +299,7 @@ bool newCommands(char** args, int numOfArg){
 		free(stringNum);
 		free(printString);
 		return true;
-	}else if(strcmp("arg", args[0]) == 0){
+	}else if(strcmp("arg", args[0]) == 0 || strcmp("args", args[0]) == 0){
 		//dec for needed variables
 		int argc = numOfArg -1;
 		char* argString = malloc(sizeof(char*)*256);
@@ -328,12 +333,15 @@ bool newCommands(char** args, int numOfArg){
 		free(stringNum);
 		free(printString);
 		return true;
-	}//end if
+	}else if(strcmp(args[0], "cd") == 0){
+		chdir(args[1]);
+		return true;
+	}
 	return false;
 }//end func
 
 void stop(int ampersand){
 	int status;
   	wait(&status);
-	printf("Process is done\n");
+	if(DEBUG)printf("stop function invoked\n");
 }//end func
