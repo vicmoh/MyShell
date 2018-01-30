@@ -19,6 +19,8 @@ I compare the argments string with if statement, such as the adding command
 and argument counter. For the process 
 
 ****************** Assumption ****************** 
+- The brief report has been written in the readme.txt since it does not
+  say specify in the assignment.
 
 ****************** Custom Command: subtract ****************** 
 For my custom command, the argument is called when calling the argument
